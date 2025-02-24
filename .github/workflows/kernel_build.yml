@@ -40,7 +40,7 @@ jobs:
         zip -r RealmeXT-Optimized-Kernel.zip * -x .git README.md
 
     - name: Upload Flashable ZIP
-      uses: actions/upload-artifact@v3
-      with:
-        name: RealmeXT-Optimized-Kernel
-        path: anykernel/RealmeXT-Optimized-Kernel.zip
+  uses: actions/upload-artifact@v4
+  with:
+    name: RealmeXT-Optimized-Kernel
+    path: anykernel/RealmeXT-Optimized-Kernel.zip
