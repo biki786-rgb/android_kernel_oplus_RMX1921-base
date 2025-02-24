@@ -1,0 +1,46 @@
+name: Build Realme XT Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ARCH: arm64
+      SUBARCH: arm64
+      DEFCONFIG: vendor/rmx1921_defconfig
+
+    steps:
+    - name: Checkout Kernel Source
+      uses: actions/checkout@v3
+
+    - name: Set up Toolchain
+      run: |
+        git clone --depth=1 https://github.com/arter97/arm64-gcc gcc
+        echo "::set-env name=CROSS_COMPILE::$(pwd)/gcc/bin/aarch64-elf-"
+
+    - name: Prepare Output Directory
+      run: mkdir -p out
+
+    - name: Configure Kernel
+      run: |
+        make O=out ${{ env.DEFCONFIG }}
+
+    - name: Compile Kernel
+      run: |
+        make O=out -j$(nproc)
+        ls out/arch/arm64/boot/
+
+    - name: Clone AnyKernel3
+      run: |
+        git clone https://github.com/osm0sis/AnyKernel3.git anykernel
+        cp out/arch/arm64/boot/Image.gz-dtb anykernel/
+        cd anykernel
+        zip -r RealmeXT-Optimized-Kernel.zip * -x .git README.md
+
+    - name: Upload Flashable ZIP
+      uses: actions/upload-artifact@v3
+      with:
+        name: RealmeXT-Optimized-Kernel
+        path: anykernel/RealmeXT-Optimized-Kernel.zip
