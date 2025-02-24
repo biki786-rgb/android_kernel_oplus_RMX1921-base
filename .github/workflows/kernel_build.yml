@@ -1,4 +1,4 @@
-name: Build Realme XT Kernel
+name: Kernel Build
 
 on:
   workflow_dispatch:
@@ -6,41 +6,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ARCH: arm64
-      SUBARCH: arm64
-      DEFCONFIG: vendor/rmx1921_defconfig
-
     steps:
-    - name: Checkout Kernel Source
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Toolchain
-      run: |
-        git clone --depth=1 https://github.com/arter97/arm64-gcc gcc
-        echo "::set-env name=CROSS_COMPILE::$(pwd)/gcc/bin/aarch64-elf-"
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y bc build-essential clang python3 git zip
 
-    - name: Prepare Output Directory
-      run: mkdir -p out
+      - name: Setup toolchain
+        run: |
+          git clone --depth=1 https://github.com/kdrag0n/proton-clang.git toolchains
 
-    - name: Configure Kernel
-      run: |
-        make O=out ${{ env.DEFCONFIG }}
+      - name: Apply patches
+        run: |
+          cd kernel
+          git apply ../patches/*.patch
 
-    - name: Compile Kernel
-      run: |
-        make O=out -j$(nproc)
-        ls out/arch/arm64/boot/
+      - name: Build kernel
+        run: |
+          export ARCH=arm64
+          export CROSS_COMPILE=../toolchains/bin/aarch64-linux-gnu-
+          make O=out vendor/RMX1921_defconfig
+          make -j$(nproc) O=out
 
-    - name: Clone AnyKernel3
-      run: |
-        git clone https://github.com/osm0sis/AnyKernel3.git anykernel
-        cp out/arch/arm64/boot/Image.gz-dtb anykernel/
-        cd anykernel
-        zip -r RealmeXT-Optimized-Kernel.zip * -x .git README.md
+      - name: Prepare AnyKernel3
+        run: |
+          cp kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
+          cp -r prebuilt_modules/ AnyKernel3/modules/
+          cd AnyKernel3
+          zip -r RealmeXT_Optimized_Kernel.zip * -x .git README.md
 
-    - name: Upload Flashable ZIP
-  uses: actions/upload-artifact@v4
-  with:
-    name: RealmeXT-Optimized-Kernel
-    path: anykernel/RealmeXT-Optimized-Kernel.zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RealmeXT-Kernel
+          path: AnyKernel3/RealmeXT_Optimized_Kernel.zip
