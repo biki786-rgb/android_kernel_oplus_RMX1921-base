@@ -1,45 +1,48 @@
 name: Kernel Build
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # ✅ Allows manual trigger from GitHub UI
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      KERNEL_DIR: kernel_source
+      PATCH_DIR: patches
+      OUT_DIR: out
+      ARCH: arm64
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: 🧬 Clone Repository
+        uses: actions/checkout@v4  # ✅ Ensures patches are available
 
-      - name: Install dependencies
+      - name: 🧬 Clone Kernel Source
         run: |
-          sudo apt update
-          sudo apt install -y bc build-essential clang python3 git zip
+          git clone --depth=1 https://github.com/biki786-rgb/android_kernel_oplus_RMX1921-base.git $KERNEL_DIR
 
-      - name: Setup toolchain
+      - name: 🩹 Apply Patches
         run: |
-          git clone --depth=1 https://github.com/kdrag0n/proton-clang.git toolchains
+          if ls $PATCH_DIR/*.patch 1> /dev/null 2>&1; then
+            for patch in $PATCH_DIR/*.patch; do
+              if ! git -C $KERNEL_DIR apply "$patch"; then
+                echo "❌ Failed to apply patch: $patch"
+                exit 1
+              fi
+            done
+            echo "✅ All patches applied successfully."
+          else
+            echo "❌ No patch files found in $PATCH_DIR."
+            exit 1
+          fi
 
-      - name: Apply patches
+      - name: ⚙️ Build Kernel
         run: |
-          cd kernel
-          git apply ../patches/*.patch
+          cd $KERNEL_DIR
+          make O=../$OUT_DIR ARCH=$ARCH your_defconfig
+          make O=../$OUT_DIR ARCH=$ARCH -j$(nproc)
 
-      - name: Build kernel
-        run: |
-          export ARCH=arm64
-          export CROSS_COMPILE=../toolchains/bin/aarch64-linux-gnu-
-          make O=out vendor/RMX1921_defconfig
-          make -j$(nproc) O=out
-
-      - name: Prepare AnyKernel3
-        run: |
-          cp kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-          cp -r prebuilt_modules/ AnyKernel3/modules/
-          cd AnyKernel3
-          zip -r RealmeXT_Optimized_Kernel.zip * -x .git README.md
-
-      - name: Upload artifact
+      - name: 📦 Upload Flashable Kernel
         uses: actions/upload-artifact@v4
         with:
-          name: RealmeXT-Kernel
-          path: AnyKernel3/RealmeXT_Optimized_Kernel.zip
+          name: Kernel-Flashable-ZIP
+          path: $OUT_DIR/arch/arm64/boot/Image.gz-dtb
