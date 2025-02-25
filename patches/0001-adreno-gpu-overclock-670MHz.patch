@@ -1,23 +1,26 @@
+---
+ drivers/gpu/msm/adreno/adreno_gpu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
 diff --git a/drivers/gpu/msm/adreno/adreno_gpu.c b/drivers/gpu/msm/adreno/adreno_gpu.c
-index abcdef1..1234567 100644
+index e2c7c2a..d4f8a23 100644
 --- a/drivers/gpu/msm/adreno/adreno_gpu.c
 +++ b/drivers/gpu/msm/adreno/adreno_gpu.c
-@@ -220,7 +220,8 @@ static const unsigned int adreno_gx_freq_table[] = {
+@@ -220,7 +220,9 @@ static const unsigned int adreno_gx_freq_table[] = {
      180000000,
      257000000,
      320000000,
 -    650000000,
-+    650000000,
-+    670000000,
++    650000000, /* Default max frequency */
++    670000000, /* Overclocked frequency */
  };
 
-diff --git a/drivers/gpu/msm/adreno/adreno.c b/drivers/gpu/msm/adreno/adreno.c
-index def1234..fed4321 100644
---- a/drivers/gpu/msm/adreno/adreno.c
-+++ b/drivers/gpu/msm/adreno/adreno.c
-@@ -150,7 +150,7 @@ static void adreno_set_freq(struct adreno_device *adreno_dev, unsigned int freq) {
-     if (freq > 650000000)
--        freq = 650000000;
-+        freq = 670000000;
-
+ static int adreno_set_gpu_freq(struct adreno_device *adreno_dev, unsigned int freq)
+ {
+-    if (freq > 650000000)
++    if (freq > 670000000)
+         freq = 670000000;
      adreno_dev->cur_freq = freq;
+     return 0;
+}
+--
