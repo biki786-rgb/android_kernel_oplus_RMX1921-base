@@ -1,0 +1,10 @@
+diff --git a/drivers/thermal/msm_thermal.c b/drivers/thermal/msm_thermal.c
+index aabbcc1..ddeeff2 100644
+--- a/drivers/thermal/msm_thermal.c
++++ b/drivers/thermal/msm_thermal.c
+@@ -400,7 +400,7 @@ static int thermal_throttle(struct thermal_zone_device *tz, int trip)
+     if (gpu_freq > 650000000)
+-        gpu_freq = 650000000;
++        gpu_freq = 670000000;
+     return 0;
+ }
