@@ -1,0 +1,13 @@
+--- a/drivers/gpu/drm/msm/adreno/adreno_vulkan.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_vulkan.c
+@@ -300,7 +300,13 @@ static void vulkan_render_optimization(struct vulkan_context *ctx)
+     /* Default rendering path */
+-    ctx->render_mode = STANDARD;
++    if (app_is_running("com.pubg.imobile")) {
++        ctx->render_mode = VULKAN_FAST_RENDER; /* Faster FPS */
++        ctx->vulkan_pipeline_cache = ENABLED; /* Reduce frame drops */
++        ctx->pre_frame_render = true; /* Preload frames */
++    } else {
++        ctx->render_mode = STANDARD;
++    }
+ }
