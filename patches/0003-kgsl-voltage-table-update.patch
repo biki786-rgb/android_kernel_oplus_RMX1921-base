@@ -1,0 +1,9 @@
+diff --git a/drivers/gpu/msm/kgsl/kgsl_pwrctrl.c b/drivers/gpu/msm/kgsl/kgsl_pwrctrl.c
+index 6543210..0987654 100644
+--- a/drivers/gpu/msm/kgsl/kgsl_pwrctrl.c
++++ b/drivers/gpu/msm/kgsl/kgsl_pwrctrl.c
+@@ -300,6 +300,7 @@ static const struct gpu_freq_volt_table adreno_voltage_table[] = {
+     {624000000, 950000},
+     {650000000, 1000000},
++    {670000000, 1025000},
+ };
