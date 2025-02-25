@@ -1,0 +1,13 @@
+--- a/drivers/input/touchscreen/touchscreen_driver.c
++++ b/drivers/input/touchscreen/touchscreen_driver.c
+@@ -85,7 +85,11 @@ static int touchscreen_init(void)
+     /* Default polling rate */
+-    input_dev->poll_interval = 60; /* 60 Hz */
++    input_dev->poll_interval = 6;  /* Increase polling rate for 165 Hz */
+
++    /* Ensure power efficiency with higher polling */
++    input_dev->power_saving = true; 
++    input_dev->thermal_limit = 40;  /* Avoid heating issues */
++    input_dev->dynamic_poll_adjustment = true; /* Lower polling rate when idle */
+
+     return 0;
