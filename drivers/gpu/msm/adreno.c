@@ -61,6 +61,10 @@ MODULE_PARM_DESC(swfdetect, "Enable soft fault detection");
 
 #define KGSL_LOG_LEVEL_DEFAULT 3
 
+static const unsigned int adreno_gpu_freqs[] = {
+    180000000, 257000000, 320000000, 389000000,
+    465000000, 510000000, 585000000, 650000000, // Added 650MHz
+};
 static void adreno_input_work(struct work_struct *work);
 static unsigned int counter_delta(struct kgsl_device *device,
 	unsigned int reg, unsigned int *counter);
