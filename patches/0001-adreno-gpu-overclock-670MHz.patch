@@ -1,8 +1,4 @@
----
- drivers/gpu/msm/adreno/adreno_gpu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/msm/adreno/adreno_gpu.c b/drivers/gpu/msm/adreno/adreno_gpu.c
+--git a/drivers/gpu/msm/adreno/adreno_gpu.c b/drivers/gpu/msm/adreno/adreno_gpu.c
 index e2c7c2a..d4f8a23 100644
 --- a/drivers/gpu/msm/adreno/adreno_gpu.c
 +++ b/drivers/gpu/msm/adreno/adreno_gpu.c
@@ -14,8 +10,7 @@ index e2c7c2a..d4f8a23 100644
 +    650000000, /* Default max frequency */
 +    670000000, /* Overclocked frequency */
  };
-
- static int adreno_set_gpu_freq(struct adreno_device *adreno_dev, unsigned int freq)
+static int adreno_set_gpu_freq(struct adreno_device *adreno_dev, unsigned int freq)
  {
 -    if (freq > 650000000)
 +    if (freq > 670000000)
