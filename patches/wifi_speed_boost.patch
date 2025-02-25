@@ -1,0 +1,12 @@
+--- a/drivers/net/wireless/wlan.c
++++ b/drivers/net/wireless/wlan.c
+@@ -220,7 +220,11 @@ static void wifi_traffic_optimization(void)
+     /* Default latency */
+-    set_wifi_latency(30);
++    set_wifi_latency(10); /* Faster response */
+
++    /* BGMI-specific QoS */
++    if (current_app_is("com.pubg.imobile")) {
++        prioritize_network_packets(); /* Reduce packet delay */
++    }
+ }
