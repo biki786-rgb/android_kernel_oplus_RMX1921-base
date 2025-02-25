@@ -1,0 +1,15 @@
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+@@ -500,7 +500,14 @@ static int adreno_gpu_init(struct adreno_gpu *adreno_gpu)
+     /* Set default GPU frequency */
+-    adreno_gpu->default_freq = 500000000; /* 500 MHz */
++    adreno_gpu->default_freq = 650000000; /* Overclock to 650 MHz */
++
++    /* Advanced tuning */
++    adreno_gpu->min_freq = 350000000;  /* Lower idle frequency */
++    adreno_gpu->max_freq = 675000000;  /* Maximum GPU boost */
++    adreno_gpu->thermal_limit = 620000000; /* Prevent excessive heat */
++    adreno_gpu->voltage_offset = -20; /* Reduced voltage for efficiency */
++    adreno_gpu->power_efficiency = true; /* Enable efficiency mode */
+ 
+     return 0;
