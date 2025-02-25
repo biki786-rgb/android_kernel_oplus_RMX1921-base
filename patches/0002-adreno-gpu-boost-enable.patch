@@ -1,0 +1,10 @@
+diff --git a/drivers/gpu/msm/adreno/adreno.c b/drivers/gpu/msm/adreno/adreno.c
+index 456defa..789abcd 100644
+--- a/drivers/gpu/msm/adreno/adreno.c
++++ b/drivers/gpu/msm/adreno/adreno.c
+@@ -200,6 +200,8 @@ int adreno_init(struct adreno_device *adreno_dev) {
+     adreno_dev->boost = true;
++    adreno_dev->max_freq = 670000000;
++    pr_info("Adreno GPU Boost enabled with max frequency 670 MHz");
+     return 0;
+ }
