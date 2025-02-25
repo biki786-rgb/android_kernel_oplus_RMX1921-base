@@ -22,5 +22,3 @@ index e2c7c2a..d4f8a23 100644
          freq = 670000000;
      adreno_dev->cur_freq = freq;
      return 0;
-}
---
